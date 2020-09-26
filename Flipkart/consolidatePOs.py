@@ -7,8 +7,6 @@ import os
 import excelReadProcessing
 import argSortStrList
 
-isPendingQty = True
-
 def getStuddsDataBaseDetails():
     loc = "../Database/studdsMRPDetailsUpdated.xlsx"
     wb = xlrd.open_workbook(loc) 
@@ -55,12 +53,11 @@ def getPOTitleRowNo(sheet):
             titleRowNo = r
     return titleRowNo
 
-def getPOData(cNos,productInfoListBusy,workbook):
+def getPOData(cNos,productInfoListBusy,workbook,sheet):
     startRow = 11
     cols = sheet.ncols
     rows = sheet.nrows-3
 
-    cNos = getCNos(sheet)
     busyNameMapped = []
     busyEANMapped = []
     busySizeMapped = []
@@ -125,11 +122,11 @@ def getPOData(cNos,productInfoListBusy,workbook):
         if misMatchFlag:
             worksheet.write(r+1, len(FinalXls), misMatchFlag)
     
-    AllData.append(copy.deepcopy(FinalXls))
+    
 
-    return AllData
+    return FinalXls
 
-def summarizeData(titlesWrite,writeCols,AllData):
+def summarizeData(titlesWrite,writeCols,AllData,loc):
     EANCol = 3
     QTYCol = 11
     EANList = []
@@ -179,17 +176,18 @@ def summarizeData(titlesWrite,writeCols,AllData):
 
     return summarized_data
 
-def consolidatePOs():
+def consolidatePOs(loc):
     productInfoListBusy = getStuddsDataBaseDetails()
-    loc = getPOFileNames() #To-Do add GUI fnuctions   
-
+    
     #create output
     workbook = xlsxwriter.Workbook('MergePO.xlsx')
     poDate = []
     AllData = []
+
     for l in range(len(loc)):
         #open wb
-        wb = xlrd.open_workbook(loc[l]) 
+        print (loc[l])
+        wb = xlrd.open_workbook(loc[l].replace("\\","\\\\")) 
         sheet = wb.sheet_by_index(0)
     
         #read PO Date:
@@ -204,7 +202,8 @@ def consolidatePOs():
             print ("Error: PO Process Error: Not able to find a column heading")
 
         #get PO Data
-        AllData = getPOData(cNos,productInfoListBusy,workbook)
+        FinalXls = getPOData(cNos,productInfoListBusy,workbook,sheet)
+        AllData.append(copy.deepcopy(FinalXls))
 
     #Create PO Tables
     worksheet = workbook.add_worksheet()
@@ -213,7 +212,7 @@ def consolidatePOs():
     for c in range(len(titlesWrite)):
         worksheet.write(0, c, titlesWrite[c])
 
-    summarized_data = summarizeData(titlesWrite,writeCols,AllData)
+    summarized_data = summarizeData(titlesWrite,writeCols,AllData,loc)
 
     for l in range(len(loc)):
         poName = loc[l].split("_")[-1]
@@ -223,7 +222,7 @@ def consolidatePOs():
         worksheet.write(2, len(titlesWrite) + l, 'QTY' + str(l+1))
     worksheet.write(2, len(titlesWrite) + len(loc), 'Total Qty')
 
-    argSort_busyNamesMapped = argSortStrList(summarized_data[1])
+    argSort_busyNamesMapped = argSortStrList.argSortStrList(summarized_data[1])
 
     #sum for each column
     for c in range(len(summarized_data)):

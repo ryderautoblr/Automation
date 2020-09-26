@@ -23,8 +23,10 @@ class consolidatePOsGUI():
         #show
         self.mainFrame.frame.Show()
 
+
     def on_run(self, event):
-        consolidatePOs.consolidatePOs()
+        loc = self.selectFile.getSelectedFiles()
+        consolidatePOs.consolidatePOs(loc)
         return
 
 if __name__ == '__main__':

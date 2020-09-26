@@ -39,9 +39,10 @@ class addSelectFilePanel():
         filePathsStr = "\n".join(filePaths) + "\n"
 
         self.textWindow.AppendText(filePathsStr)
+        os.chdir(self.currentDirectory)
 
-        return
-
-
-
-        
+    def getSelectedFiles(self):
+        loc = self.textWindow.GetValue()
+        files = loc.split("\n")
+        files.pop()
+        return files

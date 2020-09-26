@@ -1,15 +1,21 @@
 import wx
 import os
+import wx.lib.scrolledpanel as scrolled
 
 class addSelectFilePanel():
-	def __init__(self,panel):
-		#create window
-		self.display = scrolled.ScrolledPanel(panel, pos=(5, 5),size=(500,95))
-		self.textWindow = wx.TextCtrl(self.display, size=(500,95), style=wx.TE_MULTILINE | wx.HSCROLL | wx.TE_READONLY)
+    def __init__(self,panel,frame,x=5,y=5):
+        self.frame = frame
+        #create window
+        w=500; h=95
+        self.display = scrolled.ScrolledPanel(panel, pos=(x, y),size=(w,h))
+        self.textWindow = wx.TextCtrl(self.display, size=(w,h), style=wx.TE_MULTILINE | wx.HSCROLL | wx.TE_READONLY)
 
-		#create button
-		self.selectFileBtn = wx.Button(panel, label='Select Files', pos=(5, 105))
+        #create button
+        y = h+30
+        self.selectFileBtn = wx.Button(panel, label='Select Files', pos=(x, y))
         self.selectFileBtn.Bind(wx.EVT_BUTTON, self.on_press_select_file)
+        self.endX = x
+        self.endY = y
 
     def on_press_select_file(self, event):
 
@@ -35,7 +41,7 @@ class addSelectFilePanel():
         self.textWindow.AppendText(filePathsStr)
 
         return
-        
+
 
 
         

@@ -53,7 +53,7 @@ def getPOTitleRowNo(sheet):
             titleRowNo = r
     return titleRowNo
 
-def getPOData(cNos,productInfoListBusy,workbook,sheet):
+def getPOData(cNos,productInfoListBusy,workbook,sheet,poName):
     startRow = 11
     cols = sheet.ncols
     rows = sheet.nrows-3
@@ -101,7 +101,7 @@ def getPOData(cNos,productInfoListBusy,workbook,sheet):
         EANs.append(EAN)
                         
     
-    worksheet = workbook.add_worksheet()
+    worksheet = workbook.add_worksheet(poName)
     titlesWrite = ['Flipkart Name','RAA Name','Flipkart FSN','Flipkart EAN','RAA EAN','Flipkart Size','RAA Size',
                    'Flipkart Supplier MRP','RAA Supplier MRP','Flipkart Supplier Price','RAA Supplier Price', 'QTY', 'MisMatch']
 
@@ -202,7 +202,9 @@ def consolidatePOs(loc):
             print ("Error: PO Process Error: Not able to find a column heading")
 
         #get PO Data
-        FinalXls = getPOData(cNos,productInfoListBusy,workbook,sheet)
+        poName = loc[l].split("_")[-1]
+        poName = poName.split(".")[0]
+        FinalXls = getPOData(cNos,productInfoListBusy,workbook,sheet,poName)
         AllData.append(copy.deepcopy(FinalXls))
 
     #Create PO Tables

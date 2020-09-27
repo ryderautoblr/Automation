@@ -6,6 +6,7 @@ import time
 import os
 import excelReadProcessing
 import argSortStrList
+import datetime
 
 def getStuddsDataBaseDetails():
     loc = "../Database/studdsMRPDetailsUpdated.xlsx"
@@ -180,7 +181,8 @@ def consolidatePOs(loc):
     productInfoListBusy = getStuddsDataBaseDetails()
     
     #create output
-    workbook = xlsxwriter.Workbook('MergePO.xlsx')
+    now = datetime.datetime.now()
+    workbook = xlsxwriter.Workbook('MergePO_' + now.strftime("%d_%m_%Y_%H_%M_%S") + '.xlsx')
     poDate = []
     AllData = []
 

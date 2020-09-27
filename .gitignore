@@ -1,2 +1,3 @@
-*/__pycache__
-Flipkart/MergePO.xlsx
+*/__pycache__/
+Flipkart/MergePO*.xlsx
+*.pyc

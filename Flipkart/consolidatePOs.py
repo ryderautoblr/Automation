@@ -189,7 +189,7 @@ def consolidatePOs(loc):
     for l in range(len(loc)):
         #open wb
         print (loc[l])
-        wb = xlrd.open_workbook(loc[l].replace("\\","\\\\")) 
+        wb = xlrd.open_workbook(loc[l]) 
         sheet = wb.sheet_by_index(0)
     
         #read PO Date:

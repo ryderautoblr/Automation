@@ -4,3 +4,5 @@ Flipkart/MergePO*.xlsx
 *.pyc
 *.pyc
 *.pyc
+Flipkart/__pycache__/consolidatePOs.cpython-37.pyc
+*.pyc

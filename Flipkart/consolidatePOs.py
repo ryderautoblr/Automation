@@ -10,9 +10,9 @@ import datetime
 import loadStuddsDatabase
 import flipkartPOs
 
-def matchPOwithDatabase(databases,poData):
+def matchPOwithDatabase(poData):
     
-    productInfoListBusy = databases[0]
+    studdsDatabase = loadStuddsDatabase.studdsDatabase()
 
     busyNameMapped = []
     busyEANMapped = []
@@ -29,7 +29,6 @@ def matchPOwithDatabase(databases,poData):
     FinalXls = [flipkartTitle,busyNameMapped,flipkartFSN,EANs,busyEANMapped,flipkartSize,busySizeMapped,supplierMRP,busyMRPMapped,supplierPrice,busyLess28,qty]
     outputCols = [1,4,6,8]
     outputFlipkartCols = [2,11,0,5,7,9]
-    busyEAN = productInfoListBusy[1]
 
     for r in range(len(poData[0])):
         for c in range(len(poData)):
@@ -44,20 +43,14 @@ def matchPOwithDatabase(databases,poData):
         if "Helmet" in EAN:
             EAN = (name.split("_"))[-3]
 
+        matchData = ['' for i in range(5)]
+
         if EAN.strip().isdigit():
-            for i,x in enumerate(busyEAN):
-                if x.strip():
-                    if int(float(x)) == int(EAN):
-                        matchFound = True
-                        for jIndex,j in enumerate(outputCols):
-                            FinalXls[j].append(productInfoListBusy[jIndex][i])
-                        busyLess28.append(float(busyMRPMapped[-1])*(1-0.28))
-
-
-        if not matchFound:
-            for jIndex,j in enumerate(outputCols):
-                FinalXls[j].append('')
-            busyLess28.append('')
+            matchData = studdsDatabase.queryEAN(EAN)
+    
+        for jIndex,j in enumerate(outputCols):
+            FinalXls[j].append(matchData[jIndex])
+        busyLess28.append(matchData[-1])
         EANs.append(EAN)      
     
     return FinalXls
@@ -168,10 +161,6 @@ def summarizeDataAndWrite(workbook,AllData,poNames,poDates):
 
 
 def consolidatePOs(loc):
-    databases = []
-    productInfoListBusy = loadStuddsDatabase.getStuddsDataBaseDetails()
-
-    databases.append(productInfoListBusy)
     
     #create output
     now = datetime.datetime.now()
@@ -187,7 +176,7 @@ def consolidatePOs(loc):
         poDates.append(poDate)
         poNames.append(poName)
 
-        FinalXls = matchPOwithDatabase(databases,poData)
+        FinalXls = matchPOwithDatabase(poData)
         writeConsolidatedPOSheet(workbook,FinalXls,poName)
 
         AllData.append(copy.deepcopy(FinalXls))

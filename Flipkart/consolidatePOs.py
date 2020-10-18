@@ -11,6 +11,7 @@ import loadStuddsDatabase
 import loadVegaDatabase
 import loadAxorDatabase
 import loadSteelbirdDatabase
+import loadLS2Database
 import flipkartPOs
 
 def findMatch(databases,EAN,FSN):
@@ -36,8 +37,9 @@ def matchPOwithDatabase(poData):
     vegaDatabase = loadVegaDatabase.vegaDatabase()
     axorDatabase = loadAxorDatabase.axorDatabase()
     steelbirdDatabase = loadSteelbirdDatabase.steelbirdDatabase()
+    ls2Database = loadLS2Database.ls2Database()
 
-    databases = [studdsDatabase,vegaDatabase,axorDatabase,steelbirdDatabase]
+    databases = [studdsDatabase,vegaDatabase,axorDatabase,steelbirdDatabase,ls2Database]
 
     busyNameMapped = []
     busyEANMapped = []
@@ -194,7 +196,7 @@ def summarizeDataAndWrite(workbook,AllData,poNames,poDates):
     titlesWrite = ['Flipkart Name','RAA Name','Flipkart FSN','EAN','Size','Supplier MRP','Supplier Price']
     writeCols = [0,1,2,3,5,7,9]
     
-    brands = ["Axor","Steelbird","Studds","Vega",""]
+    brands = ["Axor","LS2","Steelbird","Studds","Vega",""]
 
     summarized_data, brandsWisePO_qty, brandsWisePO_index, brandsWisePO_last_index = summarizeData(titlesWrite,writeCols,AllData,poNames,brands) #To-DO
     argSort_busyNamesMapped = argSortStrList.argSortStrList(summarized_data[1])

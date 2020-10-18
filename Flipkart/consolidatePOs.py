@@ -162,6 +162,7 @@ def summarizeData(titlesWrite,writeCols,AllData,poNames,brands):
         i = 0
         for l in range(len(poNames)):
             if brandsWisePO_qty[brand][l]:
+                # print (brand,l,i)
                 brandsWisePO_index[brand][l] = i
                 brandsWisePO_last_index[brand] = i
                 i += 1
@@ -176,17 +177,19 @@ def writeSumaryTitles(worksheet,titlesWrite,poNames,poDates,brandsWisePO_index=[
 
 
     last_index = -1
-    index = -1
     for l in range(len(poNames)):
-            if not len(brandsWisePO_index):
-                index = l
-            elif brandsWisePO_index[l] != -1:
-                index = brandsWisePO_index[l]
-            last_index = index 
-            if index >= 0:
-                worksheet.write(0, len(titlesWrite) + index, poNames[l])
-                worksheet.write(1, len(titlesWrite) + index, poDates[l])
-                worksheet.write(2, len(titlesWrite) + index, 'QTY' + str(index+1))
+        index = -1    
+        if not len(brandsWisePO_index):
+            index = l
+            last_index = index
+        elif brandsWisePO_index[l] != -1:
+            index = brandsWisePO_index[l]
+            last_index = index
+        if index >= 0:
+            # print (l,index,poNames[l])
+            worksheet.write(0, len(titlesWrite) + index, poNames[l])
+            worksheet.write(1, len(titlesWrite) + index, poDates[l])
+            worksheet.write(2, len(titlesWrite) + index, 'QTY' + str(index+1))
     worksheet.write(2, len(titlesWrite) + last_index + 1, 'Total Qty')
 
 

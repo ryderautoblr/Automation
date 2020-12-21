@@ -30,7 +30,7 @@ class downloadFPOsRobot:
         stringOps.copyStrToClipboard(self.webAddress + po)
         pyautogui.hotkey('ctrl','v')
         pyautogui.press('enter')
-        time.sleep(2)
+        time.sleep(5)
         
 
 
@@ -44,7 +44,7 @@ class downloadFPOsRobot:
             po = line.split(",")[0]
             self.openPO(po)
             self.downloadImg.accessImage()
-            time.sleep(3)
+            time.sleep(5)
             
 if __name__ == '__main__':
     app = wx.App()

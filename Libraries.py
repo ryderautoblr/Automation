@@ -1,0 +1,4 @@
+matplotlib
+pyautogui
+xlrd
+pyperclip

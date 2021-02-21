@@ -8,7 +8,7 @@ def getPOTitleRowNo(sheet):
             titleRowNo = r
     return titleRowNo
 
-def getFlipkartPO(loc):
+def getFlipkartPO(loc,isSkipZeroQty=True):
     wb = xlrd.open_workbook(loc) 
     sheet = wb.sheet_by_index(0)
 
@@ -33,7 +33,7 @@ def getFlipkartPO(loc):
     poData = [[] for i in range(len(titles))]
 
     for r in range(titleRowNo+1,rows):
-        if sheet.cell_value(r, cNos[1]) == 0: continue  #skip if quantity is 0
+        if (sheet.cell_value(r, cNos[1]) == 0) and isSkipZeroQty: continue  #skip if quantity is 0
         for index,c in enumerate(cNos):
             poData[index].append(sheet.cell_value(r, c))
 

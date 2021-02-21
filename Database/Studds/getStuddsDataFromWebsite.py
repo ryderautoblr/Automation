@@ -10,10 +10,11 @@ import pandas
 import urllib.request
 import os
 
-base_url="https://ls2helmetsindia.com/"
+base_url="https://www.studds.com/"
 
 def getWebPage(url):
     html_content = requests.get(url).text
+    print (html_content)
     soup = BeautifulSoup(html_content,"html.parser")
     return soup
 
@@ -250,18 +251,16 @@ def getProductInfo(link):
     dataDict['Small Photos'] = ";".join(photoLinksSmall)
     dataDict['Big Photos'] = ";".join(photoLinksBig)
 
-    allDataDF = []
-    allDataDF.append(pandas.DataFrame([dataDict]))
-    if techSpecs: allDataDF.append(pandas.DataFrame([techSpecs]))
-    if restDescDict: allDataDF.append(pandas.DataFrame([restDescDict]))
-    finalData = pandas.concat(allDataDF,axis=1)
+    dataDF = pandas.DataFrame([dataDict])
+    techDF = pandas.DataFrame([techSpecs])
+    restDescDF = pandas.DataFrame([restDescDict])
+    finalData = pandas.concat([dataDF,techDF,restDescDF],axis=1)
 
-    #IPython.embed()
-    
     return finalData
 
 def fetchData():
-    homeSoup = getWebPage(base_url + "#")
+    homeSoup = getWebPage(base_url)
+    exit()
 
     # Get categories 
     categoryLinks = []
@@ -293,13 +292,12 @@ def fetchData():
     print (len(productLinksAll))
     summaryDFList = []
     for i,p in enumerate(productLinksAll):
-        #if i<90 or i>95: continue
+        #if i<189: continue
         print (i,p)
         finalDataDF = getProductInfo(p)
         summaryDFList.append(finalDataDF)
         # if i==10: break
 
-    # IPython.embed()
     df = summaryDFList[0].append(summaryDFList[1:])
     df.to_excel("LS2_Database.xlsx")
 

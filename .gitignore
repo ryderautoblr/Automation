@@ -8,3 +8,7 @@ Temp/*
 pathInit/__pycache__/pathInit.cpython-37.pyc
 Database/LS2/Big/*/*
 Database/LS2/Small/*/*
+Bizmate/Pictures/*
+*.pyc
+pathInit/__pycache__/pathInit.cpython-37.pyc
+pathInit/__pycache__/pathInit.cpython-37.pyc

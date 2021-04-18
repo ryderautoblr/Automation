@@ -12,3 +12,4 @@ Bizmate/Pictures/*
 *.pyc
 pathInit/__pycache__/pathInit.cpython-37.pyc
 pathInit/__pycache__/pathInit.cpython-37.pyc
+excelOps/__pycache__/excelReadProcessing.cpython-37.pyc

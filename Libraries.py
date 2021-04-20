@@ -1,4 +1,0 @@
-matplotlib
-pyautogui
-xlrd
-pyperclip

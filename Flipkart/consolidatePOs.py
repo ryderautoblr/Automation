@@ -16,6 +16,8 @@ import flipkartPOs
 import pandas
 import numpy as np
 import math
+import datetime
+import locale
 
 def matchPOwithDatabase(poDf,databasesDf):
     columnMap = {"Title":"Flipkart Name","FSN/ISBN13":"FSN","Size":"Flipkart Size","Supplier MRP":"Flipkart MRP",
@@ -39,9 +41,8 @@ def sumDF(df,cols):
     for i,name in enumerate(df.columns.to_list()):
         if "QTY" in name:
             if df[name].iloc[-1] == 0:
-                deleteColsIndex.append(i)
+                df.drop(name,axis=1,inplace=True)
 
-    df.drop(deleteColsIndex,inplace=True)    
     return df
 
         
@@ -60,20 +61,29 @@ def consolidatePOs(loc):
     #create output
 
     now = datetime.datetime.now()
-    poDates = []
-    poNames = []
+    allData = []
+    dateObjs = []
     AllDataDf = pandas.DataFrame()
     fileName = 'MergePO_' + now.strftime("%d_%m_%Y_%H_%M_%S") + '.xlsx'
     raaDF = pandas.DataFrame(['RAA'])
     raaDF.to_excel(fileName)
     writer = pandas.ExcelWriter(fileName,engine='openpyxl', mode='a')
 
+    locale.setlocale(locale.LC_ALL, "pt_br")
     for l in range(len(loc)):
         #open wb
         print (loc[l])
         poData, poName, poDate = flipkartPOs.getFlipkartPO(loc[l])
-        poDates.append(poDate)
-        poNames.append(poName)
+        dateObj = datetime.datetime.strptime(poDate,"%d-%m-%y")
+        allData.append((dateObj,poData,poName,poData))
+        dateObjs.append(dateObj)
+    
+    indexes = np.argsort(dateObjs)
+
+    for i in range(len(allData)):
+        poData = allData[indexes[i]][1]
+        poName = allData[indexes[i]][2]
+        poDate = allData[indexes[i]][3]
 
         outputDF = matchPOwithDatabase(poData,databasesDf)
 

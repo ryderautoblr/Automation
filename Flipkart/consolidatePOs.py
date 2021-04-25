@@ -30,6 +30,8 @@ def matchPOwithDatabase(poDf,databasesDf):
     return outputDF
 
 def sumDF(df,cols):
+    for c in cols:
+        df[c] = pandas.to_numeric(df[c])
     df = df.append(df.sum(numeric_only=True), ignore_index=True)
     df["Total"] = df[cols].sum(axis=1)
 

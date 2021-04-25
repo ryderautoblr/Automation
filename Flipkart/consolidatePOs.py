@@ -25,28 +25,32 @@ def matchPOwithDatabase(poDf,databasesDf):
     poDf.rename(columns=columnMap,inplace=True)
 
     outputDF = pandas.merge(poDf,databasesDf,on="FSN/EAN",how="left")
-    cols = ["Name", "Flipkart Name","Brand", "FSN/EAN","FSN","EAN","Size","Flipkart Size","MRP","Flipkart MRP","Flipkart NLC","Flipkart Supplier Price","Pending Quantity"]
-    outputDF = outputDF[cols]
     outputDF.sort_values(by=['Name'], inplace=True)
 
     return outputDF
 
-def sumDF(df,cols):
+def sumDF(df,cols,dateDict):
     for c in cols:
         df[c] = pandas.to_numeric(df[c])
     df = df.append(df.sum(numeric_only=True), ignore_index=True)
     df["Total"] = df[cols].sum(axis=1)
 
-    deleteColsIndex = []
+    cols = df.columns
+    dateDF = pandas.DataFrame(dateDict)
+    df = dateDF.append(df)
+    df = df[cols]
+
     for i,name in enumerate(df.columns.to_list()):
         if "QTY" in name:
             if df[name].iloc[-1] == 0:
                 df.drop(name,axis=1,inplace=True)
-
+    
     return df
 
         
 def consolidatePOs(loc):    
+    cols = ["Name", "Flipkart Name","Brand", "FSN/EAN","FSN","EAN","Size","Flipkart Size","MRP","Flipkart MRP","Flipkart NLC","Flipkart Supplier Price","Pending Quantity"]
+    
     studdsDatabase = loadStuddsDatabase.studdsDatabase()
     vegaDatabase = loadVegaDatabase.vegaDatabase()
     axorDatabase = loadAxorDatabase.axorDatabase()
@@ -75,23 +79,26 @@ def consolidatePOs(loc):
         print (loc[l])
         poData, poName, poDate = flipkartPOs.getFlipkartPO(loc[l])
         dateObj = datetime.datetime.strptime(poDate,"%d-%m-%y")
-        allData.append((dateObj,poData,poName,poData))
+        allData.append((dateObj,poData,poName,poDate))
         dateObjs.append(dateObj)
     
     indexes = np.argsort(dateObjs)
-
+    poDateDict = dict()
     for i in range(len(allData)):
         poData = allData[indexes[i]][1]
         poName = allData[indexes[i]][2]
         poDate = allData[indexes[i]][3]
-
+        
         outputDF = matchPOwithDatabase(poData,databasesDf)
+        outputDF = outputDF[cols]
 
         df = outputDF.copy()
-        df = sumDF(df,["Pending Quantity"])   
+        dateDict = {"Pending Quantity":[poDate]}
+        df = sumDF(df,["Pending Quantity"],dateDict)   
         df.to_excel(writer,sheet_name=poName,index=False)
 
         outputDF.rename(columns={"Pending Quantity":poName + "-QTY"},inplace=True)
+        poDateDict[poName+"-QTY"] = [poDate]
         AllDataDf = AllDataDf.append(outputDF)
     
     aggregation_functions = dict()
@@ -107,11 +114,11 @@ def consolidatePOs(loc):
     AllDataDf.sort_values(by=['Name'], inplace=True)
 
     df = AllDataDf.copy()
-    df = sumDF(df,sumCols)    
+    df = sumDF(df,sumCols,poDateDict)    
     df.to_excel(writer,sheet_name="Summary",index=False)
         
     noBrandDf = AllDataDf[AllDataDf['Brand'].isnull()]
-    noBrandDf = sumDF(noBrandDf,sumCols)
+    noBrandDf = sumDF(noBrandDf,sumCols,poDateDict)
     noBrandDf.to_excel(writer,sheet_name="Not Found",index=False)
 
     AllDataDf = AllDataDf[AllDataDf['Brand'].notnull()]
@@ -119,7 +126,7 @@ def consolidatePOs(loc):
     
     for b in brands:
         brandDf = AllDataDf[AllDataDf['Brand']==b]
-        brandDf = sumDF(brandDf,sumCols)
+        brandDf = sumDF(brandDf,sumCols,poDateDict)
         brandDf.to_excel(writer,sheet_name=b,index=False)
 
     writer.save()

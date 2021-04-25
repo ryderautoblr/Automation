@@ -1,36 +1,23 @@
 import xlrd
 import os
 import pathInit
+import pandas
 
 class steelbirdDatabase():
     def __init__(self):
         baseFolder = pathInit.getBaseFolder() + "Database\\"
 
         loc = baseFolder + "Steelbird FSN.xlsx"
-        wb = xlrd.open_workbook(loc) 
-        sheet = wb.sheet_by_index(0)
 
-        startRow = 7
-        rows = sheet.nrows
+        df = pandas.read_excel(loc)
 
-        self.productInfoListBusy = [[] for i in range(4)] #Name, EAN/FSN, Size, MRP
-        cNos = [6,3,8,11]
-
-        for r in range(startRow,rows):
-            name = sheet.cell_value(r, cNos[0]).strip()
-            for index,c in enumerate(cNos):
-                if name:
-                    self.productInfoListBusy[index].append(str(sheet.cell_value(r, c)))
-
-    def queryFSN(self,FSN):
-        matchFound = False
-        matchData = ['' for i in range(6)]
-        for i,x in enumerate(self.productInfoListBusy[1]):
-            if x.strip() == FSN.strip():
-                matchFound = True
-                for jIndex in range(len(self.productInfoListBusy)):
-                    matchData[jIndex] = self.productInfoListBusy[jIndex][i]
-                matchData[-1] = float(matchData[-3])*(1-0.3392)
-                matchData[-2] = "Steelbird"
-
-        return matchData, matchFound
+        newColNames = {"model_name":"Name","product_id":"FSN/EAN","size":"Size"}
+        df.columns = df.iloc[4] # To-Do better logic
+        self.mappedDF = df[['model_name','product_id','MRP','size']]
+        self.mappedDF.dropna(subset=["MRP"],inplace=True)
+        self.mappedDF.drop(4,inplace=True)
+        self.mappedDF = self.mappedDF.rename(columns = newColNames,inplace=False)
+        self.mappedDF['FSN/EAN'] = self.mappedDF['FSN/EAN'].str.strip()
+        self.mappedDF['Brand'] = "Steelbird"
+        self.discount = 1-0.3392
+        self.mappedDF['Flipkart Supplier Price'] = self.mappedDF['MRP'] * self.discount 

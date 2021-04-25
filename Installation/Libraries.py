@@ -7,3 +7,4 @@ pyperclip
 wxpython
 xlsxwriter
 pandas
+openpyxl

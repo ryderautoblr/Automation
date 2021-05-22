@@ -27,7 +27,7 @@ class updateFSNPanel(wx.Panel):
     self.textFSNDetails = wx.TextCtrl(self, pos=(150, 300),size=(800,195), style=wx.TE_MULTILINE)
 
     self.globalSearchItems = addGlobalSearchPanelTextBox.addGlobalSearchPanelTextBox(self,x=10,y=500)  
-    
+    self.cbNone = wx.CheckBox(self, label = 'None',pos = (400,self.globalSearchItems.endY-50))
     self.btnUpdate = wx.Button(self, label='Update', pos=(10, self.globalSearchItems.endY))
     self.btnUpdate.Bind(wx.EVT_BUTTON, self.on_update)
 
@@ -76,8 +76,12 @@ class updateFSNPanel(wx.Panel):
       self.btnUpdate.Disable()
 
   def on_update(self,event):
-    self.updateFSNObj.updateFSNData(self.globalSearchItems.labelSelected.GetLabel(), self.textNewFSN.GetValue())
+    if not self.cbNone.GetValue():
+      self.updateFSNObj.updateFSNData(self.globalSearchItems.labelSelected.GetLabel(), self.textNewFSN.GetValue())
+    else:
+      self.updateFSNObj.updateFSNData("None", self.textNewFSN.GetValue())
     self.btnUpdate.Disable()
+    self.cbNone.SetValue(False)
     
   def on_save(self,event):
     self.updateFSNObj.writeKeywords(self.selectDatabaseFile.getFileName().replace(".xlsx","New.xlsx"))

@@ -26,8 +26,12 @@ class updateFSNPanel(wx.Panel):
     self.textNewFSN = wx.TextCtrl(self, pos=(150, 250),size=(800,45))
     self.textFSNDetails = wx.TextCtrl(self, pos=(150, 300),size=(800,195), style=wx.TE_MULTILINE)
 
+    font1 = wx.Font(12, wx.MODERN, wx.NORMAL, wx.NORMAL, False, u'Consolas')
+    self.textNewFSN.SetFont(font1)
+    self.textFSNDetails.SetFont(font1)
+
     self.globalSearchItems = addGlobalSearchPanelTextBox.addGlobalSearchPanelTextBox(self,x=10,y=500)  
-    self.cbNone = wx.CheckBox(self, label = 'None',pos = (400,self.globalSearchItems.endY-50))
+    self.cbNone = wx.CheckBox(self, label = 'None',pos = (800,self.globalSearchItems.endY-50))
     self.btnUpdate = wx.Button(self, label='Update', pos=(10, self.globalSearchItems.endY))
     self.btnUpdate.Bind(wx.EVT_BUTTON, self.on_update)
 

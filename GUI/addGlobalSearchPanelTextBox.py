@@ -24,6 +24,10 @@ class addGlobalSearchPanelTextBox(wx.Panel):
         self.labelSelected = wx.StaticText(panel, label = "", pos = (x,y))
         y += 50
         self.prev_value_cb = None
+
+        font1 = wx.Font(12, wx.MODERN, wx.NORMAL, wx.NORMAL, False, u'Consolas')
+        self.textDetails.SetFont(font1)
+        self.labelSelected.SetFont(font1)
         
         self.endX = x
         self.endY = y

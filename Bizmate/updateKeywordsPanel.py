@@ -16,6 +16,11 @@ class updateKeywordsPanel(wx.Panel):
     self.btnStart = wx.Button(self, label='Start/Next', pos=(100, 200))
     self.btnStart.Bind(wx.EVT_BUTTON, self.on_start)
 
+    wx.StaticText(self, label = "Total", pos = (200,200))
+    wx.StaticText(self, label = "Done", pos = (400,200))
+    self.totalLabel = wx.StaticText(self, label = "", pos = (300,200))
+    self.doneLabel = wx.StaticText(self, label = "", pos = (500,200))
+
     
     wx.StaticText(self,label="Busy Keyword",pos=(10, 265))
     wx.StaticText(self,label="Found in \nHelmet Names",pos=(10, 315))
@@ -64,11 +69,15 @@ class updateKeywordsPanel(wx.Panel):
 
   def on_run(self, event):
     self.keywordsObj.keywords(self.selectKeywordsFile.getFileName(),self.selectBusyItemsFile.getFileName())
+    self.totalLabel.SetLabel(str(len(self.keywordsObj.newWords)))
     self.enableUpdate()
 
   def on_start(self, event):  
     word,names = self.keywordsObj.getFilterNames()
     self.disableSelect()
+    self.totalLabel.SetLabel(str(len(self.keywordsObj.newWords)))
+    self.doneLabel.SetLabel(str(self.keywordsObj.wordIndex))
+    
 
     if word:
       self.textNewKeywordShort.SetValue(word)

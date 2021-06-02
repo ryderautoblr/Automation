@@ -7,11 +7,13 @@ import sys
 sys.path.insert(1,"../pathInit/")
 import pathInit
 import updateFSNPanel
+import mergeDatabasePanel
 
 class MyFrame(wx.Frame):    
   def __init__(self):
     super().__init__(parent=None, title='RAA GUI',size=(1000,1000))
     nb = wx.Notebook(self) 
+    nb.AddPage(mergeDatabasePanel.mergeDatabasePanel(nb),"Merge Database") 
     nb.AddPage(updateKeywordsPanel.updateKeywordsPanel(nb),"Update Keywords") 
     nb.AddPage(tagKeywordsPanel.tagKeywordsPanel(nb),"Tag Keywords") 
     nb.AddPage(diffKeywordsPanel.diffKeywordsPanel(nb),"Diff Keywords") 

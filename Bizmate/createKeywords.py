@@ -71,17 +71,9 @@ class createKeywords():
 
   def updateNames(self,filename,keywordFile,panel):
     df = excelReadProcessing.getPD(filename)
-    count = 0
-    while df.iloc[count][0] != 'Name':
-      count += 1
-
-    df.columns = df.iloc[count]
-    df = df.iloc[count+1:]
-
     sheet = excelReadProcessing.getSheet(keywordFile,0)
     keywordsData = excelReadProcessing.getData(sheet,1)
 
-    longNames = []
     keysDict = dict()
     for index,word in enumerate(keywordsData[0]):
       keysDict[word] = keywordsData[1][index]
@@ -92,16 +84,14 @@ class createKeywords():
         # Cancelled by user.
         break
       if pandas.isnull(name): 
-        longNames.append('')
+        df['Long Name'].iloc[i] = ""
         continue
       words = name.split(" ")
       newWords = []
       for w in words:
         if w:
           newWords.append(keysDict[w])
-      longName = " ".join(newWords)
-      longNames.append(longName)
-
-    df['Long Name'] = longNames
+      df['Long Name'].iloc[i] = " ".join(newWords)
+      
     df.to_excel(filename.replace(".xlsx","New.xlsx"),index=False)
     progdlg.Destroy()

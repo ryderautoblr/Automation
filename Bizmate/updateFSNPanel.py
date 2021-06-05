@@ -20,6 +20,11 @@ class updateFSNPanel(wx.Panel):
     self.btnStart = wx.Button(self, label='Start/Next', pos=(100, 200))
     self.btnStart.Bind(wx.EVT_BUTTON, self.on_start)
 
+    wx.StaticText(self, label = "Total", pos = (200,200))
+    wx.StaticText(self, label = "Done", pos = (400,200))
+    self.totalLabel = wx.StaticText(self, label = "", pos = (300,200))
+    self.doneLabel = wx.StaticText(self, label = "", pos = (500,200))
+
     wx.StaticText(self,label="FSN",pos=(10, 265))
     wx.StaticText(self,label="FSN Details",pos=(10, 300))
   
@@ -64,11 +69,14 @@ class updateFSNPanel(wx.Panel):
   def on_run(self, event):
     self.updateFSNObj.createFSNDatabase(self.selectFSNNewFile.getFileName(),self.selectDatabaseFile.getFileName())
     self.globalSearchItems.setDatabase(self.updateFSNObj.names)
+    self.totalLabel.SetLabel(str(len(self.updateFSNObj.newFSNs['FSN'])))
     self.enableUpdate()
 
   def on_start(self, event):  
     fsn,data = self.updateFSNObj.nextFSN()
     self.disableSelect()
+    self.totalLabel.SetLabel(str(len(self.updateFSNObj.newFSNs['FSN'])))
+    self.doneLabel.SetLabel(str(self.updateFSNObj.wordIndex))
 
     if fsn:
       self.textNewFSN.SetValue(fsn)
@@ -76,7 +84,7 @@ class updateFSNPanel(wx.Panel):
       self.btnUpdate.Enable()
       
     else:
-      self.globalSearchItems.labelSelected.SetValue("Done! No New Words")
+      self.globalSearchItems.labelSelected.SetLabel("Done! No New Words")
       self.btnUpdate.Disable()
 
   def on_update(self,event):

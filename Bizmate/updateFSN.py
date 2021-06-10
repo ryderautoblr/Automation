@@ -31,8 +31,9 @@ class updateFSN():
       self.itemsDF = self.itemsDF.append(df1, ignore_index = True)
 
     self.names = self.itemsDF['Long Name'].astype(str).to_list()
-    self.newFSNs = pandas.read_excel(open(newFSNFile, 'rb'),
-              sheet_name='Sheet1')
+    self.newFSNs = pandas.read_excel(open(newFSNFile, 'rb'))
+    print (self.newFSNs)
+    self.newFSNs['FSN'] = self.newFSNs['FSN'].str.strip()
     # self.newFSNs = self.newFSNs.sort_values(['Model Name','Color','Size'])
 
     self.itemsDF['ListFSN'] = self.itemsDF['FSN'].str.split(";")
@@ -45,4 +46,4 @@ class updateFSN():
       self.itemsDF['FSN'].iloc[i] = str(self.itemsDF['FSN'].iloc[i]) + ";" + fsn
 
   def writeKeywords(self,filename):
-    self.itemsDF.to_excel(filename)
+    self.itemsDF.to_excel(filename,index=False)

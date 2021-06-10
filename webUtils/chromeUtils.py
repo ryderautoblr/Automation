@@ -11,7 +11,7 @@ from selenium.webdriver.common.by import By
 
 class chromeDriver():
     def __init__(self):
-        self.driver = webdriver.Chrome(pathInit.getBaseFolder() + 'webUtils\\chromedriver.exe')  
+        self.driver = webdriver.Chrome(pathInit.getBaseFolder() + 'webUtils\\chromedriver91.exe')  
 
     def getSoup(self,link,waitID=None):
         self.driver.get(link)

@@ -8,3 +8,7 @@ wxpython
 xlsxwriter
 pandas
 openpyxl
+bs4
+selenium
+pickle-mixin
+regex

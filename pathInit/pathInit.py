@@ -1,6 +1,9 @@
 import sys
 import os
 
+def createFolder(folder):
+    if not os.path.exists(folder):
+        os.makedirs(folder)
 
 def getBaseFolder():
     currentDirectory = os.getcwd()

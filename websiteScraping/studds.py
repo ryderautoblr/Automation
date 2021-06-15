@@ -30,8 +30,8 @@ def waitForStuddsPageToLoad(driver):
 websiteHome = "https://www.studds.com/"
 chromeObj = chromeUtils.chromeDriver()
 driver = chromeObj.driver
+driver.maximize_window()
 
-'''
 driver.get(websiteHome)
 productsElement = driver.find_element_by_xpath("//*[contains(text(), 'PRODUCTS')]")
 productsElement.click()
@@ -72,13 +72,31 @@ for subCategoryLink in subCategoryLinks:
         scrollToElement(driver,lastFoundElement)
 
 print (len(productLinks))
-'''
 
+
+'''
+####################################################
+# Get Product Links From Database
+####################################################
+
+dbfile = open('studdsDataObj', 'rb')     
+db = pickle.load(dbfile)
+dbfile.close()
+
+productLinks = []
+for key in db.keys():
+    productLinks.append(db[key]["link"])
+
+
+####################################################
+'''
 productData = dict()
-productLinks = ["https://www.studds.com/motorcycle-accessory/mobike-side-luggage/cruiser-box"]
+# productLinks = ["https://www.studds.com/motorcycle-accessory/mobike-side-luggage/cruiser-box"]
 # productLinks = ["https://www.studds.com/helmet/full-face-helmet/shifter-d1-decor"]
 for productLink in productLinks:
     driver.get(productLink)
+
+
 
     #Product Name
     e = driver.find_element_by_class_name("sec-title")
@@ -86,7 +104,12 @@ for productLink in productLinks:
     if productTitle in productData.keys():
         print (productTitle,productLink)
 
+
+
     productData[productTitle] = dict()
+
+    #Category Link
+    productData[productTitle]['link'] = productLink
 
     #Product price
     productPriceE = WebDriverWait(driver, waitTimeForLoad).until(EC.presence_of_element_located((By.CLASS_NAME,'product-price')))
@@ -101,7 +124,10 @@ for productLink in productLinks:
         productNameE = WebDriverWait(driver, waitTimeForLoad).until(EC.presence_of_element_located((By.CLASS_NAME,'prod-var-name')))
         time.sleep(0.1)
         imageE = e.find_element_by_tag_name("img")
-        productData[productTitle]['products'].append((e.text,imageE.get_attribute("src")))
+        productData[productTitle]['products'].append((e.text,imageE.get_attribute("src")))    
+    if not es:
+        e = driver.find_element_by_class_name("main-helmet")
+    
 
     #get product sizes
     es = driver.find_elements_by_class_name("size-desc")

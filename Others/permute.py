@@ -5,7 +5,11 @@ def permuteTwo(a,b=None):
 		if type(ea) is not list:
 			ea = [ea]
 		if b is not None:
-			if len(b) == 0: return a
+			if len(b) == 0: 
+				eaCopy = ea.copy()
+				eaCopy.append('')
+				cperm.append(eaCopy)
+				# return a
 			for eb in b:
 				eaCopy = ea.copy()
 				eaCopy.append(eb)

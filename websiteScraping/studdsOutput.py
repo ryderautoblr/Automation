@@ -13,7 +13,7 @@ def getSubAttr(attr):
 		return subAttrs[1].split(")")[0]
 	return ""
 
-dbfile = open('studdsDataObj_golden', 'rb')     
+dbfile = open('studdsDataObj', 'rb')     
 db = pickle.load(dbfile)
 dbfile.close()
 
@@ -27,6 +27,7 @@ for key in db.keys():
 	mrp = re.findall(r'\d+\.\d+', mrp)
 	size = [x[0] + " (%s)" % x[1] for x in db[key]['sizes']]
 	description = ''
+	link = [db[key]['link']]
 	for desc in db[key]['description']:
 		if len(desc) > 0:
 			description += desc[0]
@@ -36,15 +37,15 @@ for key in db.keys():
 			description += "\n"
 
 	description = [description]
-	permList = [category,product,mrp,size,description]
+	permList = [category,product,mrp,size,description,link]
 	outputPerm = permute.permulteList(permList)
 	if "CRUISER" in key: print (outputPerm,permList)
 	data.extend(outputPerm)
 	
-df = pandas.DataFrame(data,columns=["Category","Product","MRP","Size","Description"])
+df = pandas.DataFrame(data,columns=["Category","Product","MRP","Size","Description","Link"])
 df['Photo Url'] = df["Product"].apply(getSubAttr)
 df['Dimensions'] = df["Size"].apply(getSubAttr)
 
 df.to_excel("StuddsData.xlsx",index=False)
 
-print (df)
+# print (df)

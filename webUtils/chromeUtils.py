@@ -9,6 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
+
 class chromeDriver():
     def __init__(self):
         self.driver = webdriver.Chrome(pathInit.getBaseFolder() + 'webUtils\\chromedriver91.exe')  
@@ -25,6 +26,9 @@ class chromeDriver():
 
     def close(self):
         self.driver.quit()
+
+    def scrollToElement(driver,element):
+        self.driver.execute_script("return arguments[0].scrollIntoView(true);", element)
 
 class download():
     def __init__(self):

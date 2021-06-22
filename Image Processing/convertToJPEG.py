@@ -2,6 +2,9 @@ import os
 import sys 
 from PIL import Image 
 import shutil
+import sys
+sys.path.insert(1,"../pathInit/")
+import pathInit
 
 # define a function for 
 # compressing an image 
@@ -15,7 +18,7 @@ def convertMe(path,file, newPath, verbose = False):
         bg.paste(picture,picture)
         picture = bg
 
-    newFile =  newPath + "\\Converted_"+file.split('.')[0] + '.JPEG'
+    newFile =  newPath + "\\"+file.split('.')[0] + '.JPEG'
     picture.save(newFile, 
                 "JPEG") 
 
@@ -24,27 +27,24 @@ def convertMe(path,file, newPath, verbose = False):
 def main(): 
     
     # finds current working dir 
-    cwd = "D:\\Mavox\\Images\\" 
-    outputPath = "D:\\Mavox\\Images Converted\\" 
+    cwd = "C:\\Users\\umesh\\OneDrive\\Images\\Aaron\\HELMET EDITED\\" 
+    outputPath = "C:\\Users\\umesh\\OneDrive\\Images\\Aaron\\HELMET EDITED CONVERTED\\" 
 
-    for (dirpath, dirnames, filenames) in os.walk(cwd):
-        for d in dirnames:
-            for (dirpath1,dirnames1,f1) in os.walk(cwd+d):
-                newPath = outputPath + d
-                try:  
-                    os.mkdir(newPath)  
-                except OSError as error:  
-                    #print(error)
-                    x=1
-    
-                for f in f1:
-                    print ("Start: ",f)
-                    file = dirpath1+"\\"+f
-                    if ('.db' not in f) and ('.psd' not in f) :
-                        convertMe(dirpath1, f, newPath)
-                    
-                    print ("Done: ",f)
+    files = pathInit.getAllFiles(cwd)
+    print (len(files))
+    for f in files:
+        path, name = os.path.split(f)
+        newPath = path.replace(cwd,outputPath)
+        try:  
+            os.makedirs(newPath)
+        except OSError as error:
+            pass
 
+        print ("Start: ",f)
+        if ('.db' not in f) and ('.psd' not in f) :
+            convertMe(path, name, newPath)
+        
+            print ("Done: ",f)
     print("Done") 
 
 # Driver code 

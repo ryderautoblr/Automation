@@ -2,10 +2,12 @@ import wx
 import os
 import createSelectFilePanel
 import mergeDatabase
+import wx.lib.scrolledpanel as scrolled
 
-class mergeDatabasePanel(wx.Panel):
+class mergeDatabasePanel(scrolled.ScrolledPanel):
   def __init__(self, parent): 
     super(mergeDatabasePanel, self).__init__(parent) 
+    self.SetupScrolling()
 
     self.busyFile = createSelectFilePanel.createSelectFilePanel(self,'Select Busywin Database',0,0)
     self.FullDatabaseFile = createSelectFilePanel.createSelectFilePanel(self,'Select Final Database',0,100)   

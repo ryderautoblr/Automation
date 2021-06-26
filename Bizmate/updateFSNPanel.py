@@ -6,10 +6,13 @@ sys.path.insert(1,"../pathInit/")
 import pathInit
 import addGlobalSearchPanelTextBox
 import updateFSN
+import wx.lib.scrolledpanel as scrolled
 
-class updateFSNPanel(wx.Panel):
+
+class updateFSNPanel(scrolled.ScrolledPanel):
   def __init__(self, parent): 
     super(updateFSNPanel, self).__init__(parent) 
+    self.SetupScrolling()
 
     self.selectDatabaseFile = createSelectFilePanel.createSelectFilePanel(self,'Select Database',0,0)
     self.selectFSNNewFile = createSelectFilePanel.createSelectFilePanel(self,'Select New FSN File',0,100)   

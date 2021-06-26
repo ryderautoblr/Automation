@@ -9,6 +9,7 @@ import pathInit
 import updateFSNPanel
 import mergeDatabasePanel
 
+
 class MyFrame(wx.Frame):    
   def __init__(self):
     super().__init__(parent=None, title='RAA GUI',size=(1000,1000))

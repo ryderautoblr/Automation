@@ -2,10 +2,12 @@ import wx
 import os
 import createKeywords
 import createSelectFilePanel
+import wx.lib.scrolledpanel as scrolled
 
-class updateKeywordsPanel(wx.Panel):
+class updateKeywordsPanel(scrolled.ScrolledPanel):
   def __init__(self, parent): 
     super(updateKeywordsPanel, self).__init__(parent) 
+    self.SetupScrolling()
 
     self.selectKeywordsFile = createSelectFilePanel.createSelectFilePanel(self,'Select Keywords Files',0,0)
     self.selectBusyItemsFile = createSelectFilePanel.createSelectFilePanel(self,'Select Busy Items File',0,100)   

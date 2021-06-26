@@ -31,6 +31,7 @@ chromeObj = chromeUtils.chromeDriver()
 driver = chromeObj.driver
 driver.maximize_window()
 
+'''
 driver.get(websiteHome)
 
 dropdownElements = driver.find_elements_by_class_name("dropdown")
@@ -70,132 +71,55 @@ for p in pageLinks:
         if link not in productLinks:
             productLinks.append(link)
 print (len(productLinks))
+'''
 
+productLinks = ["https://www.axorhelmets.com/index.php?route=product/product&path=20_84&product_id=314"]
+productData = dict()
+for link in productLinks:
+    driver.get(link)
+    productData[link] = dict()
+
+    #get name
+    e = driver.find_element_by_id('pname')
+    productData[link]["name"] = e.text
+    print ("name",e.text)
+
+    #model colour
+    e = driver.find_element_by_id('model-color')
+    productData[link]["color"] = e.text
+    print ("color",e.text)    
+    
+    #mrp
+    mrpEs = driver.find_elements_by_class_name('list-unstyled')
+    rsE = None
+    for mrpE in mrpEs:
+        if "Rs" in mrpE.text:
+            rsE = mrpE
+            productData[link]['mrp'] = mrpE.text
+            print (mrpE.text)
+
+    #description
+    parentE = rsE.find_element_by_xpath("..")
+    spanE = parentE.find_elements_by_tag_name("span")[1]
+    productData[link]['desc'] = spanE.text
+    print (spanE.text)
+
+    #Size
+    sizeDiv = driver.find_element_by_class_name('form-group')
+    radioEs = sizeDiv.find_elements_by_class_name('radio')
+    productData[link]['size'] = []
+    for radio in radioEs:
+        if radio.text.strip():
+            print (radio.text.strip())
+            productData[link]['size'].append(radio.text.strip())
+
+    #Images
+    imageEs = driver.find_elements_by_class_name('thumbnail')
+    for imageE in imageEs:
+        productData[link]['imageLink'] = imageE.get_attribute("href")
+        print (imageE.get_attribute("href"))
 driver.quit()
 exit()
-
-    
-subCategoryLinks = []
-for categoryLink in categoryLinks:
-    driver.get(categoryLink)
-    e = WebDriverWait(driver, waitTimeForLoad).until(EC.presence_of_element_located((By.CLASS_NAME,"cat-single")))
-    if e is None:
-        print ("Not Found Category",categoryLink)
-        continue
-    es = driver.find_elements_by_class_name("cat-single")
-    for e in es:
-        subCategoryLinks.append(e.get_attribute("href"))
-
-productLinks = []
-for subCategoryLink in subCategoryLinks:
-    driver.get(subCategoryLink)
-    e = WebDriverWait(driver, waitTimeForLoad).until(EC.presence_of_element_located((By.CLASS_NAME,"cat-single")))
-    if e is None:
-        print ("Not Found Category",subCategoryLink)
-        continue
-    es = driver.find_elements_by_class_name("cat-single")
-    lastFoundElement = None
-    lastFoundIndex = -1
-    while(lastFoundIndex != (len(es)-1)):
-        for i,e in enumerate(es):
-            if e.text:
-                if e.get_attribute("href") not in productLinks:
-                    productLinks.append(e.get_attribute("href"))
-                lastFoundElement = e
-                lastFoundIndex = i
-
-        scrollToElement(driver,lastFoundElement)
-
-print (len(productLinks))
-
-
-'''
-####################################################
-# Get Product Links From Database
-####################################################
-
-dbfile = open('studdsDataObj', 'rb')     
-db = pickle.load(dbfile)
-dbfile.close()
-
-productLinks = []
-for key in db.keys():
-    productLinks.append(db[key]["link"])
-
-
-####################################################
-'''
-productData = dict()
-# productLinks = ["https://www.studds.com/motorcycle-accessory/mobike-side-luggage/cruiser-box"]
-# productLinks = ["https://www.studds.com/helmet/full-face-helmet/shifter-d1-decor"]
-for productLink in productLinks:
-    driver.get(productLink)
-
-
-
-    #Product Name
-    e = driver.find_element_by_class_name("sec-title")
-    productTitle = e.text
-    if productTitle in productData.keys():
-        print (productTitle,productLink)
-
-
-
-    productData[productTitle] = dict()
-
-    #Category Link
-    productData[productTitle]['link'] = productLink
-
-    #Product price
-    productPriceE = WebDriverWait(driver, waitTimeForLoad).until(EC.presence_of_element_located((By.CLASS_NAME,'product-price')))
-    productData[productTitle]['mrp'] = productPriceE.text
-
-    #get sub products
-    es = driver.find_elements_by_class_name("prod-var-single")
-    productData[productTitle]['products'] = []
-    for e in es:
-        hover = ActionChains(driver).move_to_element(e)
-        hover.perform()
-        productNameE = WebDriverWait(driver, waitTimeForLoad).until(EC.presence_of_element_located((By.CLASS_NAME,'prod-var-name')))
-        time.sleep(0.1)
-        imageE = e.find_element_by_tag_name("img")
-        productData[productTitle]['products'].append((e.text,imageE.get_attribute("src")))    
-    if not es:
-        e = driver.find_element_by_class_name("main-helmet")
-    
-
-    #get product sizes
-    es = driver.find_elements_by_class_name("size-desc")
-    productData[productTitle]['sizes'] = []
-    isPrev = False
-    for e in es:
-        sizeNameE = e.find_element_by_class_name("size-name")
-        
-        if isPrev:
-            driver.find_element_by_xpath("//body").click()
-            productSizeE = WebDriverWait(driver, waitTimeForLoad).until(EC.invisibility_of_element_located((By.CLASS_NAME,'product-size')))
-            time.sleep(0.1)
-        
-        e.click()
-        productSizeE = WebDriverWait(driver, waitTimeForLoad).until(EC.presence_of_element_located((By.CLASS_NAME,'product-size')))
-        time.sleep(0.1)
-        isPrev = True
-        
-        productSizeE = e.find_element_by_class_name("product-size")
-        productData[productTitle]['sizes'].append((sizeNameE.text,productSizeE.text))
-        
-    #get descriptions
-    es = driver.find_elements_by_class_name("det-title")
-
-    productData[productTitle]['description'] = []
-    for e in es:
-        parentE = e.find_element_by_xpath('..')
-        parentE = parentE.find_element_by_xpath('..')
-        scrollToElement(driver,parentE)
-        parentE.click()
-        productData[productTitle]['description'].append(parentE.text.split("\n"))
-
-    print (productData[productTitle])
         
 f = open("studdsDataObj","wb")
 pickle.dump(productData,f)

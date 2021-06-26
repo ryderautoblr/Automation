@@ -2,10 +2,12 @@ import wx
 import os
 import diffKeywords
 import createSelectFilePanel
+import wx.lib.scrolledpanel as scrolled
 
-class diffKeywordsPanel(wx.Panel):
+class diffKeywordsPanel(scrolled.ScrolledPanel):
   def __init__(self, parent): 
     super(diffKeywordsPanel, self).__init__(parent) 
+    self.SetupScrolling()
 
     self.selectKeywordsFileNew = createSelectFilePanel.createSelectFilePanel(self,'Select New Keywords Files',0,0)
     self.selectKeywordsFileOld = createSelectFilePanel.createSelectFilePanel(self,'Select Old Keywords Files',0,100)   

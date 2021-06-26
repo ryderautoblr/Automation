@@ -2,11 +2,12 @@ import wx
 import os
 import createSelectFilePanel
 import xlUtils
+import wx.lib.scrolledpanel as scrolled
 
-
-class busyToAppPanel(wx.Panel):
+class busyToAppPanel(scrolled.ScrolledPanel):
   def __init__(self, parent): 
     super(busyToAppPanel, self).__init__(parent) 
+    self.SetupScrolling()
 
     self.selectBusyList = createSelectFilePanel.createSelectFilePanel(self,'Select Busy Items Files',0,0)
     self.selectAppList = createSelectFilePanel.createSelectFilePanel(self,'Select App Items Files',0,100)   

@@ -17,7 +17,7 @@ for key in db.keys():
 	key = key.replace(" ","_")
 	pathInit.createFolder(folder + key)
 	for p in products:
-		name = folder + key + "/ " + p[0] + ".png"
+		name = folder + key + "/" + p[0] + ".png"
 		link = p[1]
 		downloadUtils.getImage(link,name)
 	# break

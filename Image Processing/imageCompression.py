@@ -12,7 +12,7 @@ import shutil
 
 # define a function for 
 # compressing an image 
-def compressMe(path,file, newPath, verbose = False): 
+def compressMe(path,file, newPath, verbose = False,_quality=90): 
     
     # open the image 
     picture = Image.open(path + "\\" + file) 
@@ -27,7 +27,7 @@ def compressMe(path,file, newPath, verbose = False):
     picture.save(newFile, 
                 "JPEG", 
                 optimize = True, 
-                quality = 95) 
+                quality = _quality) 
     size = os.path.getsize(newFile)
     return size
 

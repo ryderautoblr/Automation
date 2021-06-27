@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(1,"../pathInit/")
+sys.path.insert(1,"../../pathInit/")
 import pathInit
 import selenium
 from selenium import webdriver
@@ -31,7 +31,7 @@ chromeObj = chromeUtils.chromeDriver()
 driver = chromeObj.driver
 driver.maximize_window()
 
-'''
+
 driver.get(websiteHome)
 
 dropdownElements = driver.find_elements_by_class_name("dropdown")
@@ -64,6 +64,7 @@ for c in categoryLinks:
 productLinks = []
 for p in pageLinks:
     driver.get(p)
+    time.sleep(1)
     productElements = driver.find_elements_by_class_name("image")
     for pE in productElements:
         aTag = pE.find_element_by_tag_name('a')
@@ -71,9 +72,9 @@ for p in pageLinks:
         if link not in productLinks:
             productLinks.append(link)
 print (len(productLinks))
-'''
 
-productLinks = ["https://www.axorhelmets.com/index.php?route=product/product&path=20_84&product_id=314"]
+
+# productLinks = ["https://www.axorhelmets.com/index.php?route=product/product&path=20_84&product_id=314"]
 productData = dict()
 for link in productLinks:
     driver.get(link)
@@ -82,12 +83,12 @@ for link in productLinks:
     #get name
     e = driver.find_element_by_id('pname')
     productData[link]["name"] = e.text
-    print ("name",e.text)
+    # print ("name",e.text)
 
     #model colour
     e = driver.find_element_by_id('model-color')
     productData[link]["color"] = e.text
-    print ("color",e.text)    
+    # print ("color",e.text)    
     
     #mrp
     mrpEs = driver.find_elements_by_class_name('list-unstyled')
@@ -96,13 +97,13 @@ for link in productLinks:
         if "Rs" in mrpE.text:
             rsE = mrpE
             productData[link]['mrp'] = mrpE.text
-            print (mrpE.text)
+            # print (mrpE.text)
 
     #description
     parentE = rsE.find_element_by_xpath("..")
     spanE = parentE.find_elements_by_tag_name("span")[1]
     productData[link]['desc'] = spanE.text
-    print (spanE.text)
+    # print (spanE.text)
 
     #Size
     sizeDiv = driver.find_element_by_class_name('form-group')
@@ -110,18 +111,21 @@ for link in productLinks:
     productData[link]['size'] = []
     for radio in radioEs:
         if radio.text.strip():
-            print (radio.text.strip())
+            # print (radio.text.strip())
             productData[link]['size'].append(radio.text.strip())
 
     #Images
     imageEs = driver.find_elements_by_class_name('thumbnail')
+    productData[link]['imageLinks'] = []
     for imageE in imageEs:
-        productData[link]['imageLink'] = imageE.get_attribute("href")
-        print (imageE.get_attribute("href"))
-driver.quit()
-exit()
+        imageLink = imageE.get_attribute("href")
+        if imageLink not in productData[link]['imageLinks']: productData[link]['imageLinks'].append(imageLink)
+        # print (imageLink)
+
         
-f = open("studdsDataObj","wb")
+f = open("axorDataObj","wb")
 pickle.dump(productData,f)
 f.close()
 
+driver.quit()
+exit()

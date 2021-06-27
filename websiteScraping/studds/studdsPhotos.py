@@ -3,21 +3,52 @@ import sys
 sys.path.insert(1,"../../pathInit/")
 import pathInit
 import downloadUtils
+import os
+import pandas
 
 dbfile = open('studdsDataObj', 'rb')     
 db = pickle.load(dbfile)
 dbfile.close()
 
-folder = "./StuddsPhotos/"
+folder = os.getcwd().replace("\\","/") + "/StuddsPhotos/"
 pathInit.createFolder(folder)
 
+def getPhotoDetails(category,name):
+	photoName = name + ".png"
+	photoName = photoName.replace("/","").replace(" ","_")
+
+	photoPath = folder + category.replace(" ","_")
+	
+	return photoName,photoPath
 
 for key in db.keys():
 	products = db[key]['products']
-	key = key.replace(" ","_")
+	
 	pathInit.createFolder(folder + key)
 	for p in products:
-		name = folder + key + "/" + p[0] + ".png"
+		photoName,photoPath = getPhotoDetails(key,p[0])
+		name = photoPath + "/" + photoName
 		link = p[1]
-		downloadUtils.getImage(link,name)
+		# downloadUtils.getImage(link,name)
 	# break
+
+photoDirs = []
+photoNamesList = []
+
+df = pandas.read_excel("StuddsData.xlsx")
+
+for i in range(len(df["Category"])):
+	category = df["Category"].iloc[i]
+	if productName.isnull(): 
+	productName = df["Product"].iloc[i]
+
+	
+	print (productName)
+	photoName,photoPath = getPhotoDetails(category,productName)
+	photoDirs.append(photoPath)
+	photoNamesList.append(photoName)
+
+df['Photo Paths'] = photoDirs
+df['Photo Names'] = photoNamesList
+
+df.to_excel("StuddsData.xlsx",index=False)

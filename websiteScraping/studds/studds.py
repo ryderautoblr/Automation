@@ -32,6 +32,7 @@ chromeObj = chromeUtils.chromeDriver()
 driver = chromeObj.driver
 driver.maximize_window()
 
+'''
 driver.get(websiteHome)
 productsElement = driver.find_element_by_xpath("//*[contains(text(), 'PRODUCTS')]")
 productsElement.click()
@@ -89,21 +90,18 @@ for key in db.keys():
 
 
 ####################################################
-'''
+
 productData = dict()
 # productLinks = ["https://www.studds.com/motorcycle-accessory/mobike-side-luggage/cruiser-box"]
 # productLinks = ["https://www.studds.com/helmet/full-face-helmet/shifter-d1-decor"]
 for productLink in productLinks:
     driver.get(productLink)
 
-
-
     #Product Name
     e = driver.find_element_by_class_name("sec-title")
     productTitle = e.text
     if productTitle in productData.keys():
         print (productTitle,productLink)
-
 
 
     productData[productTitle] = dict()

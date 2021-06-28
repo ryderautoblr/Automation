@@ -29,7 +29,7 @@ for key in db.keys():
 		photoName,photoPath = getPhotoDetails(key,p[0])
 		name = photoPath + "/" + photoName
 		link = p[1]
-		# downloadUtils.getImage(link,name)
+		downloadUtils.getImage(link,name)
 	# break
 
 photoDirs = []

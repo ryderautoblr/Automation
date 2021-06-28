@@ -13,6 +13,14 @@ def getSubAttr(attr):
 		return subAttrs[1].split(")")[0]
 	return ""
 
+def getMainAttr(attr):
+	if attr is None: return ""
+	subAttrs = attr.split(" (")
+	if len(subAttrs) == 2:
+		return subAttrs[0]
+	return ""
+
+
 dbfile = open('studdsDataObj', 'rb')     
 db = pickle.load(dbfile)
 dbfile.close()
@@ -43,8 +51,12 @@ for key in db.keys():
 	data.extend(outputPerm)
 	
 df = pandas.DataFrame(data,columns=["Category","Product","MRP","Size","Description","Link"])
-df['Photo Url'] = df["Product"].apply(getSubAttr)
+df['Image Links'] = df["Product"].apply(getSubAttr)
 df['Dimensions'] = df["Size"].apply(getSubAttr)
+
+df = df.fillna('')
+df["Product"] = df["Product"].apply(getMainAttr)
+df['Size'] = df["Size"].apply(getMainAttr)
 
 df.to_excel("StuddsData.xlsx",index=False)
 

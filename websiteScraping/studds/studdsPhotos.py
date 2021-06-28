@@ -38,12 +38,17 @@ photoNamesList = []
 df = pandas.read_excel("StuddsData.xlsx")
 
 for i in range(len(df["Category"])):
-	category = df["Category"].iloc[i]
-	if productName.isnull(): 
 	productName = df["Product"].iloc[i]
+	if pandas.isnull(productName): 
+		photoDirs.append("")
+		photoNamesList.append("")
+		continue
+
+	category = df["Category"].iloc[i]
+	productName = productName.split(" (")[0]
+
 
 	
-	print (productName)
 	photoName,photoPath = getPhotoDetails(category,productName)
 	photoDirs.append(photoPath)
 	photoNamesList.append(photoName)

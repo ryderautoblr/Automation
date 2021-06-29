@@ -8,6 +8,7 @@ sys.path.insert(1,"../pathInit/")
 import pathInit
 import updateFSNPanel
 import mergeDatabasePanel
+import mergePhotoPanel
 
 
 class MyFrame(wx.Frame):    
@@ -20,6 +21,7 @@ class MyFrame(wx.Frame):
     nb.AddPage(diffKeywordsPanel.diffKeywordsPanel(nb),"Diff Keywords") 
     nb.AddPage(busyToAppPanel.busyToAppPanel(nb),"Busy To App Update") 
     nb.AddPage(updateFSNPanel.updateFSNPanel(nb),"Update FSN Database") 
+    nb.AddPage(mergePhotoPanel.mergePhotoPanel(nb),"Update Photo Database") 
     self.Show(True) 
     self.Centre()
 

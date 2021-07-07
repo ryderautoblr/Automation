@@ -89,6 +89,8 @@ class mergePhotoPanel(scrolled.ScrolledPanel):
   def on_update(self,event):
     if not self.cbNone.GetValue():
       self.photoObj.updatePhotoData(self.globalSearchItems.labelSelected.GetLabel(), self.textFSNDetails.GetValue())
+    else:
+      self.photoObj.updatePhotoData("None", self.textFSNDetails.GetValue())
     self.btnUpdate.Disable()
     self.cbNone.SetValue(False)
     

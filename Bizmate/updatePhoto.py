@@ -13,6 +13,7 @@ class updatePhoto():
     self.dfNew = []
     self.newData = []
     self.wordIndex = 0
+    self.file = "notFound.txt"
     
   def nextData(self):
     if len(self.dfNew[self.dfNew.columns[0]]) == self.wordIndex:
@@ -32,6 +33,7 @@ class updatePhoto():
     self.newData = pandas.read_excel(open(newDataFile, 'rb'))
 
     webColumns = self.newData.columns.to_list()
+    webColumns.append("Temp")
     itemsCols = self.itemsDF.columns.to_list()
     for i in range(len(webColumns)):
       webColumns[i] += "_website"
@@ -44,9 +46,27 @@ class updatePhoto():
     self.dfNew = self.dfNew[self.dfNew['Exist']=="right_only"]
     self.dfNew = self.dfNew[self.newData.columns]
 
+    f = open(self.file,"r")
+    lines = f.readlines()
+    f.close()
+
+    for line in lines:
+      self.existingPhotos.append(line.strip())
+
+    self.dfNew["isExist"] = self.dfNew.apply(lambda row : self.checkInExisting(row))
+    self.dfNew = self.dfNew[self.dfNew["isExist"]]
     
+
+  def checkInExisting(self,row):
+    data = ";".join(row)
+    return data in self.existingPhotos
+
+
   def updatePhotoData(self,longName,data):
+    if longName == "None": 
+      self.existingPhotos.append(";".join(data))
     index = self.itemsDF.index[self.itemsDF['Long Name']==longName].tolist()
+    
     dataCols = data.split("\n")
     for i in index:
       for j,c in enumerate(self.dfNew.columns):
@@ -54,3 +74,6 @@ class updatePhoto():
 
   def writeKeywords(self,filename):
     self.itemsDF.to_excel(filename,index=False)
+    f = open(self.file,"w")
+    f.write("\n".join(self.existingPhotos))
+    f.close()

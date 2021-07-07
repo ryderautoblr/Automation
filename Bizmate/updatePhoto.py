@@ -72,8 +72,8 @@ class updatePhoto():
     return not isPhoto
 
   def updatePhotoData(self,longName,data):
+    data = data.split("\n")
     if longName == "None":
-      data = data.split("\n")
       self.existingPhotos.append(";".join(data))
     index = self.itemsDF.index[self.itemsDF['Long Name']==longName].tolist()
     

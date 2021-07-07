@@ -32,7 +32,6 @@ class updateFSN():
 
     self.names = self.itemsDF['Long Name'].astype(str).to_list()
     self.newFSNs = pandas.read_excel(open(newFSNFile, 'rb'))
-    print (self.newFSNs)
     self.newFSNs['FSN'] = self.newFSNs['FSN'].str.strip()
     # self.newFSNs = self.newFSNs.sort_values(['Model Name','Color','Size'])
 

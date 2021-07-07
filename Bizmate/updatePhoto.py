@@ -5,6 +5,7 @@ import pathInit
 import math
 import pandas
 import wx
+import numpy as np
 
 class updatePhoto():
   def __init__(self):
@@ -13,7 +14,8 @@ class updatePhoto():
     self.dfNew = []
     self.newData = []
     self.wordIndex = 0
-    self.file = "notFound.txt"
+    self.file = pathInit.getBaseFolder() + "\\Bizmate\\notFound.txt"
+    self.existingPhotos = []
     
   def nextData(self):
     if len(self.dfNew[self.dfNew.columns[0]]) == self.wordIndex:
@@ -33,12 +35,15 @@ class updatePhoto():
     self.newData = pandas.read_excel(open(newDataFile, 'rb'))
 
     webColumns = self.newData.columns.to_list()
-    webColumns.append("Temp")
     itemsCols = self.itemsDF.columns.to_list()
     for i in range(len(webColumns)):
       webColumns[i] += "_website"
       if webColumns[i] not in itemsCols:
         self.itemsDF[webColumns[i]] = ""
+
+    if "Temp_website" not in self.itemsDF.columns.to_list():
+      self.itemsDF["Temp_website"] = ""
+
 
     self.newData.columns = webColumns
 
@@ -46,31 +51,35 @@ class updatePhoto():
     self.dfNew = self.dfNew[self.dfNew['Exist']=="right_only"]
     self.dfNew = self.dfNew[self.newData.columns]
 
-    f = open(self.file,"r")
-    lines = f.readlines()
-    f.close()
+    lines = []
+    if os.path.isfile(self.file):
+      f = open(self.file,"r")
+      lines = f.readlines()
+      f.close()
 
     for line in lines:
       self.existingPhotos.append(line.strip())
 
-    self.dfNew["isExist"] = self.dfNew.apply(lambda row : self.checkInExisting(row))
+    self.dfNew["isExist"] = self.dfNew.apply(lambda row : self.checkInExisting(row),axis=1)
     self.dfNew = self.dfNew[self.dfNew["isExist"]]
+    self.dfNew.drop("isExist",inplace=True,axis=1)
     
 
   def checkInExisting(self,row):
+    row = row.replace(np.nan, '', regex=True)
     data = ";".join(row)
-    return data in self.existingPhotos
-
+    isPhoto = data in self.existingPhotos
+    return not isPhoto
 
   def updatePhotoData(self,longName,data):
-    if longName == "None": 
+    if longName == "None":
+      data = data.split("\n")
       self.existingPhotos.append(";".join(data))
     index = self.itemsDF.index[self.itemsDF['Long Name']==longName].tolist()
     
-    dataCols = data.split("\n")
     for i in index:
       for j,c in enumerate(self.dfNew.columns):
-        self.itemsDF[c].iloc[i] = dataCols[j]
+        self.itemsDF[c].iloc[i] = data[j]
 
   def writeKeywords(self,filename):
     self.itemsDF.to_excel(filename,index=False)

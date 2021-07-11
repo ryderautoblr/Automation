@@ -62,7 +62,7 @@ class updatePhoto():
     
 
   def checkInExisting(self,row):
-    row = row.replace(np.nan, '', regex=True)
+    row = row.replace(np.nan, 'nan', regex=True)
     data = ";".join(row)
     data = data.replace("\n",";")
     isPhoto = data in self.existingPhotos

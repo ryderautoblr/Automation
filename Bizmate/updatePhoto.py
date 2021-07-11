@@ -41,16 +41,12 @@ class updatePhoto():
       if webColumns[i] not in itemsCols:
         self.itemsDF[webColumns[i]] = ""
 
-    if "Temp_website" not in self.itemsDF.columns.to_list():
-      self.itemsDF["Temp_website"] = ""
-
-
     self.newData.columns = webColumns
-
+    
     self.dfNew = pandas.merge(self.itemsDF, self.newData, on=self.newData.columns.to_list(), how='right', indicator='Exist')
     self.dfNew = self.dfNew[self.dfNew['Exist']=="right_only"]
     self.dfNew = self.dfNew[self.newData.columns]
-
+    
     lines = []
     if os.path.isfile(self.file):
       f = open(self.file,"r")
@@ -68,7 +64,9 @@ class updatePhoto():
   def checkInExisting(self,row):
     row = row.replace(np.nan, '', regex=True)
     data = ";".join(row)
+    data = data.replace("\n",";")
     isPhoto = data in self.existingPhotos
+    # print (isPhoto)
     return not isPhoto
 
   def updatePhotoData(self,longName,data):

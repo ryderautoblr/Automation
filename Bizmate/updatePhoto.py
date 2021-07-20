@@ -42,11 +42,20 @@ class updatePhoto():
         self.itemsDF[webColumns[i]] = ""
 
     self.newData.columns = webColumns
+   
+    self.itemsDF.replace(np.nan,'nan',regex=True,inplace=True)
+    self.newData.replace(np.nan,'nan',regex=True,inplace=True)
+
     
     self.dfNew = pandas.merge(self.itemsDF, self.newData, on=self.newData.columns.to_list(), how='right', indicator='Exist')
     self.dfNew = self.dfNew[self.dfNew['Exist']=="right_only"]
     self.dfNew = self.dfNew[self.newData.columns]
-    
+    # print (self.dfNew.iloc[0].to_list(),self.itemsDF[self.itemsDF['Color_website']==self.dfNew['Color_website'].iloc[0]].iloc[0].to_list()[22:])
+    # for i in range(22,31):
+    #   if self.dfNew.iloc[0].to_list()[i-22] == self.itemsDF[self.itemsDF['Color_website']==self.dfNew['Color_website'].iloc[0]].iloc[0].to_list()[i]:
+    #     print ("here",i)
+    # print (self.dfNew.iloc[0].to_list()[5],self.itemsDF[self.itemsDF['Color_website']==self.dfNew['Color_website'].iloc[0]].iloc[0].to_list()[27])
+
     lines = []
     if os.path.isfile(self.file):
       f = open(self.file,"r")
@@ -63,6 +72,7 @@ class updatePhoto():
 
   def checkInExisting(self,row):
     row = row.replace(np.nan, 'nan', regex=True)
+    row = row.astype(str)
     data = ";".join(row)
     data = data.replace("\n",";")
     isPhoto = data in self.existingPhotos

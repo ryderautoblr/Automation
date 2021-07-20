@@ -109,7 +109,8 @@ dbfile = open('ls2ProductLinks', 'rb')
 productLinks = pickle.load(dbfile)
 dbfile.close()
 
-productLinks = ["https://ls2helmetsindia.com/in/p/FF324-METRO-EVO-COMPLEX-MATT-BLACK-WHITE-BLUE-WITH-PEAK/467"]
+print (len(productLinks))
+# productLinks = ["https://ls2helmetsindia.com/in/p/FF324-METRO-EVO-COMPLEX-MATT-BLACK-WHITE-BLUE-WITH-PEAK/467"]
 productData = dict()
 for i,link in enumerate(productLinks):
     if i%10==0:
@@ -136,46 +137,48 @@ for i,link in enumerate(productLinks):
     productData[link]['desc'] = []
     try:
         e = driver.find_element_by_id('box_description')
-        print (e.text)
-        continue
-
-        productData[link]['desc'].append(('overview',e.text))
-
-        es = driver.find_elements_by_class_name('product__features__item')
-        for e in es:
-            titleE = e.find_element_by_class_name('product__features__item-title')
-            desc = e.get_attribute('data-original-title')
-            # print (titleE.text,desc)
-            productData[link]['desc'].append((titleE.text,desc))
+        h2Tags = e.find_elements_by_tag_name('h2')
+        for h2Tag in h2Tags:
+            text = ''
+            if h2Tag.text == "TECHNICAL SPECIFICATIONS ":
+                divTag = h2Tag.find_element_by_xpath("./following-sibling::div")
+                tdTags = divTag.find_elements_by_tag_name("td")
+                for td in tdTags:
+                    try:
+                        hTag = td.find_element_by_tag_name("h4")
+                        ulTag = td.find_element_by_tag_name("ul")
+                        productData[link]['desc'].append((hTag.text,ulTag.text))
+                    except:
+                        pass
+                continue
+            title = h2Tag.text
+            try:
+                divTag = h2Tag.find_element_by_xpath("./following-sibling::div")
+                pTag = divTag.find_element_by_tag_name("p")
+                text = pTag.text
+            except:
+                try:
+                    pTag = h2Tag.find_element_by_xpath("./following-sibling::p")
+                    text = pTag.text
+                except:
+                    pass
+            productData[link]['desc'].append((title,text))
     except:
         pass
-    try:
-        e = driver.find_element_by_class_name('product__description')
-        productData[link]['desc'].append(('',e.text))
-    except:
-        pass
-    print ("desc",productData[link]['desc'])
-
-    continue
     
-
-    #Size
-    sizeEs = driver.find_elements_by_class_name('variable-item-span')
-    productData[link]['size'] = []
-    for e in sizeEs:
-        productData[link]['size'].append(e.text)
-        # print (e.text)
-
+    # print (productData[link]['desc'])
 
     #Images
-    imageEs = driver.find_elements_by_class_name('swiper-slide')
+    imageE = driver.find_element_by_class_name('productimg')
+    imageEs = imageE.find_elements_by_tag_name('a')
     productData[link]['imageLinks'] = []
     for imageE in imageEs:
-        imageTag = imageE.find_element_by_tag_name('img')
-        imageLink = imageTag.get_attribute("src")
+        imageLink = imageE.get_attribute("href")
         if imageLink not in productData[link]['imageLinks']: productData[link]['imageLinks'].append(imageLink)
         # print (imageLink)
-        
+
+
+print (len(productData.keys()))
 f = open("ls2DataObj","wb")
 pickle.dump(productData,f)
 f.close()

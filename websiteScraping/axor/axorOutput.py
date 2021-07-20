@@ -11,6 +11,7 @@ db = pickle.load(dbfile)
 dbfile.close()
 
 data = []
+exists = []
 for key in db.keys():
 	productLink = [key]
 	productName = [db[key]['name']]
@@ -23,7 +24,14 @@ for key in db.keys():
 	
 	permList = [productName,mrp,sizes,color,desc,productLink,images]
 	outputPerm = permute.permulteList(permList)
-	data.extend(outputPerm)
+	for o in outputPerm:
+		check = o[0:4]
+		if check not in exists:
+			exists.append(check)
+			data.append(o)
+		else:
+			print ("Duplicate",o)
+			# data.append(o)
 	
 df = pandas.DataFrame(data,columns=["Product","MRP","Size","Color","Description","Link","Image Links"])
 

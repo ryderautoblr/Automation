@@ -22,6 +22,8 @@ class updatePhoto():
       return []
     data = self.dfNew.iloc[self.wordIndex].astype(str).to_list()
     self.wordIndex += 1
+    for i in range(len(data)):
+      data[i] = data[i].replace("\n",";;")
     return data
 
   def createDatabase(self,newDataFile,itemFile):
@@ -50,11 +52,14 @@ class updatePhoto():
     self.dfNew = pandas.merge(self.itemsDF, self.newData, on=self.newData.columns.to_list(), how='right', indicator='Exist')
     self.dfNew = self.dfNew[self.dfNew['Exist']=="right_only"]
     self.dfNew = self.dfNew[self.newData.columns]
-    # print (self.dfNew.iloc[0].to_list(),self.itemsDF[self.itemsDF['Color_website']==self.dfNew['Color_website'].iloc[0]].iloc[0].to_list()[22:])
+    # key = 'Product_website'
+    # print (self.dfNew.iloc[0].to_list(),self.itemsDF[self.itemsDF[key]==self.dfNew[key].iloc[0]])
     # for i in range(22,31):
-    #   if self.dfNew.iloc[0].to_list()[i-22] == self.itemsDF[self.itemsDF['Color_website']==self.dfNew['Color_website'].iloc[0]].iloc[0].to_list()[i]:
-    #     print ("here",i)
-    # print (self.dfNew.iloc[0].to_list()[5],self.itemsDF[self.itemsDF['Color_website']==self.dfNew['Color_website'].iloc[0]].iloc[0].to_list()[27])
+    #   if self.dfNew.iloc[0].to_list()[i-22] == self.itemsDF[self.itemsDF[key]==self.dfNew[key].iloc[0]].iloc[1].to_list()[i]:
+    #     # print ("here",i)
+    #     pass
+    #   else:
+    #     print (self.dfNew.iloc[0].to_list()[i-22],self.itemsDF[self.itemsDF[key]==self.dfNew[key].iloc[0]].iloc[1].to_list()[i])
 
     lines = []
     if os.path.isfile(self.file):
@@ -87,6 +92,7 @@ class updatePhoto():
     
     for i in index:
       for j,c in enumerate(self.dfNew.columns):
+        data[j] = data[j].replace(";;","\n")
         self.itemsDF[c].iloc[i] = data[j]
 
   def writeKeywords(self,filename):

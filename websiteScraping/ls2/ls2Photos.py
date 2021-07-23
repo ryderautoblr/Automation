@@ -6,23 +6,16 @@ import downloadUtils
 import pandas
 import os
 
-dbfile = open('vegaDataObj', 'rb')     
+dbfile = open('ls2DataObj', 'rb')     
 db = pickle.load(dbfile)
 dbfile.close()
 
-folder = os.getcwd().replace("\\","/") + "/VegaPhotos/"
+folder = os.getcwd().replace("\\","/") + "/Ls2Photos/"
 pathInit.createFolder(folder)
 
-def getPhotoDetails(name,hierarcy):
-	photoName = name
-	photoName = photoName.replace("/","").replace(" ","_")
-	hierarcyFolders = hierarcy.split(">>")[1:-1]
-	hierarcyFolders = [x.strip() for x in hierarcyFolders]
-	hierarcyFolders = "/".join(hierarcyFolders) + "/"
-	hierarcyFolders = hierarcyFolders.replace(" ","_")
-
-	photoPath = folder + hierarcyFolders + photoName
-	
+def getPhotoDetails(name):
+	photoName = name.replace("+","").replace(" ","_")
+	photoPath = folder + photoName
 	return photoName,photoPath
 
 
@@ -30,9 +23,8 @@ count = 0
 for key in db.keys():
 	images = db[key]['imageLinks']
 	productName = db[key]['name']
-	hierarcy = db[key]['hierarchy']
-
-	photoName,photoPath = getPhotoDetails(productName,hierarcy)
+	
+	photoName,photoPath = getPhotoDetails(productName)
 
 	pathInit.createFolder(photoPath)
 	photoNames = []
@@ -40,16 +32,16 @@ for key in db.keys():
 	for i,imageLink in enumerate(images):
 		photoNameTemp = photoName + "_" + str(i) + ".png"
 		name = photoPath + "/" + photoNameTemp
-		# print (name)
+		print (name)
 		# downloadUtils.getImage(imageLink,name)
 		photoNames.append(photoNameTemp)
 
-	# print ("Done!",photoPath, photoName,count)
+	print ("Done!",photoPath, photoName,count)
 	count += 1
 	# break
 
 # exit()
-df = pandas.read_excel("VegaData.xlsx")
+df = pandas.read_excel("Ls2Data.xlsx")
 
 photoDirs = []
 photoNamesList = []
@@ -57,8 +49,7 @@ photoNamesList = []
 
 for i in range(len(df["Product"])):
 	productName = df["Product"].iloc[i]
-	hierarcy = df["Hierarchy"].iloc[i]
-	photoName,photoPath = getPhotoDetails(productName,hierarcy)
+	photoName,photoPath = getPhotoDetails(productName)
 	photoDirs.append(photoPath)
 	imageLinkData = df["Image Links"].iloc[i]
 	if pandas.isnull(imageLinkData): 
@@ -71,4 +62,4 @@ for i in range(len(df["Product"])):
 df['Photo Paths'] = photoDirs
 df['Photo Names'] = photoNamesList
 
-df.to_excel("VegaData.xlsx",index=False)
+df.to_excel("Ls2Data.xlsx",index=False)

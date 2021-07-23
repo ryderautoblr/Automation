@@ -47,19 +47,23 @@ class updatePhoto():
    
     self.itemsDF.replace(np.nan,'nan',regex=True,inplace=True)
     self.newData.replace(np.nan,'nan',regex=True,inplace=True)
+    self.itemsDF[self.newData.columns] = self.itemsDF[self.newData.columns].astype(str)
+    self.newData = self.newData.astype(str)
 
     
     self.dfNew = pandas.merge(self.itemsDF, self.newData, on=self.newData.columns.to_list(), how='right', indicator='Exist')
     self.dfNew = self.dfNew[self.dfNew['Exist']=="right_only"]
     self.dfNew = self.dfNew[self.newData.columns]
-    # key = 'Product_website'
-    # print (self.dfNew.iloc[0].to_list(),self.itemsDF[self.itemsDF[key]==self.dfNew[key].iloc[0]])
-    # for i in range(22,31):
-    #   if self.dfNew.iloc[0].to_list()[i-22] == self.itemsDF[self.itemsDF[key]==self.dfNew[key].iloc[0]].iloc[1].to_list()[i]:
+    key = 'Product_website'
+    # tempDf = self.itemsDF[self.newData.columns]
+    # print (tempDf)
+    # print (self.dfNew.iloc[0].to_list(),tempDf[self.itemsDF[key]==self.dfNew[key].iloc[0]])
+    # for i in range(len(tempDf.columns)):
+    #   if self.dfNew.iloc[0].to_list()[i] == tempDf[tempDf[key]==self.dfNew[key].iloc[0]].iloc[0].to_list()[i]:
     #     # print ("here",i)
     #     pass
     #   else:
-    #     print (self.dfNew.iloc[0].to_list()[i-22],self.itemsDF[self.itemsDF[key]==self.dfNew[key].iloc[0]].iloc[1].to_list()[i])
+    #     print ([self.dfNew.iloc[0].to_list()[i],tempDf[tempDf[key]==self.dfNew[key].iloc[0]].iloc[0].to_list()[i]])
 
     lines = []
     if os.path.isfile(self.file):

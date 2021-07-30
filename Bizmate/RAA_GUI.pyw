@@ -9,6 +9,7 @@ import pathInit
 import updateFSNPanel
 import mergeDatabasePanel
 import mergePhotoPanel
+import mergeTwoDatabasePanel
 
 
 class MyFrame(wx.Frame):    
@@ -21,7 +22,8 @@ class MyFrame(wx.Frame):
     nb.AddPage(diffKeywordsPanel.diffKeywordsPanel(nb),"Diff Keywords") 
     nb.AddPage(busyToAppPanel.busyToAppPanel(nb),"Busy To App Update") 
     nb.AddPage(updateFSNPanel.updateFSNPanel(nb),"Update FSN Database") 
-    nb.AddPage(mergePhotoPanel.mergePhotoPanel(nb),"Update Photo Database") 
+    nb.AddPage(mergePhotoPanel.mergePhotoPanel(nb),"Update Photo Database")
+    nb.AddPage(mergeTwoDatabasePanel.mergeTwoDatabasePanel(nb),"Merge Two Database") 
     self.Show(True) 
     self.Centre()
 

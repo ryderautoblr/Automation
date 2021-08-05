@@ -3,6 +3,19 @@ import os
 import createSelectFilePanel
 import pandas
 import wx.lib.scrolledpanel as scrolled
+import numpy
+
+def concat(row):
+  row = row.astype(str)
+  data = ";".join(row)
+  values = data.split(";")
+  finalValues = []
+  for v in values:
+    if "nan" != v:
+      if v not in finalValues:
+        finalValues.append(v)
+  return ";".join(finalValues)
+
 
 class busyToAppPanel(scrolled.ScrolledPanel):
   def __init__(self, parent): 
@@ -57,7 +70,25 @@ class busyToAppPanel(scrolled.ScrolledPanel):
     self.appProductsDf = self.appDf["Product Details"]
     self.appProductsDf["Long Name"] = self.appProductsDf["Product Name"]
     self.newDf = pandas.merge(self.busyDf,self.appProductsDf,on=["Long Name"],how="outer")
-    print (self.newDf,self.busyDf,self.appProductsDf)
+    self.colMapDf = pandas.read_excel("ColumnMappings.xlsx")
+    tagSet = set()
+    tagDict = dict()
+    for col in self.colMapDf.columns:
+      for val in self.colMapDf[col].to_list():
+        if not pandas.isnull(val): 
+          if val not in tagDict.keys():
+            tagDict[val] = []
+          tagDict[val].append(col)
+        
+    self.finalDf = pandas.DataFrame(columns=list(tagDict.keys()))
+    self.finalDf.replace(numpy.NaN,"",inplace=True)
+    for c in self.finalDf.columns:
+      self.finalDf[c] = self.newDf[tagDict[c]].apply(lambda x: concat(x), axis=1)
+      
+    name = "Consolidated.xlsx"
+    self.finalDf.to_excel(name,index=False)
+
+
 
 
 

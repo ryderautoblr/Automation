@@ -12,3 +12,4 @@ bs4
 selenium
 pickle-mixin
 regex
+xlwt

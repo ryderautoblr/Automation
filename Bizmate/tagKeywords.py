@@ -9,6 +9,7 @@ import math
 import pandas
 import wx
 
+
 class tagKeywords():
   def __init__(self):
     self.names = []
@@ -98,6 +99,7 @@ class tagKeywords():
     for h in headers:
       if h == 'Size':dfNames['NewSize'] = newDF[h]
       else: dfNames[h] = newDF[h]
+    dfNames["Item Code"] = dfNames[['Brand','Style']].apply(lambda x: " ".join(x),axis=1)
     dfNames.to_excel(filename.replace(".xlsx","New.xlsx"),index=False)
     progdlg.Destroy()
     

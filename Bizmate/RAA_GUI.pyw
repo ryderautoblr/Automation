@@ -10,6 +10,7 @@ import updateFSNPanel
 import mergeDatabasePanel
 import mergePhotoPanel
 import mergeTwoDatabasePanel
+import tagTypesPanel
 
 
 class MyFrame(wx.Frame):    
@@ -19,6 +20,7 @@ class MyFrame(wx.Frame):
     nb.AddPage(mergeDatabasePanel.mergeDatabasePanel(nb),"Merge Database") 
     nb.AddPage(updateKeywordsPanel.updateKeywordsPanel(nb),"Update Keywords") 
     nb.AddPage(tagKeywordsPanel.tagKeywordsPanel(nb),"Tag Keywords") 
+    nb.AddPage(tagTypesPanel.tagTypesPanel(nb),"Tag Types") 
     nb.AddPage(diffKeywordsPanel.diffKeywordsPanel(nb),"Diff Keywords") 
     nb.AddPage(busyToAppPanel.busyToAppPanel(nb),"Busy To App Update") 
     nb.AddPage(updateFSNPanel.updateFSNPanel(nb),"Update FSN Database") 
